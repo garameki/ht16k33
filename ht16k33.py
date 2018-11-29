@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-_*_ coding:utf-8 _*_
 
 #https://www.javadrive.jp/python/string/index9.html
 #数値を文字列に変換(str)
@@ -8,7 +7,6 @@ _*_ coding:utf-8 _*_
 import smbus
 
 import time
-from datetime import datetime
 
 class H16k33:
 	D = [0] * 10
@@ -23,16 +21,14 @@ class H16k33:
 	D[8] = 0x7F
 	D[9] = 0x6F
 
-	bus = None
-	addr = None
 	def __init__(self,dev_bus,dev_addr):
 		#(hex) dev_bus
 		#(hex) dev_addr
-		bus = smbus.SMBus(dev_bus)
-		addr = dev_addr
-		bus.write_byte(addr,0x21)
-		bus.write_byte(addr,0x81)
-		bus.write_byte(addr,0xE0)
+		self.bus = smbus.SMBus(dev_bus)
+		self.addr = dev_addr
+		self.bus.write_byte(self.addr,0x21)
+		self.bus.write_byte(self.addr,0x81)
+		self.bus.write_byte(self.addr,0xE0)
 
 		#light strength
 	def strength(self,value):
@@ -43,27 +39,29 @@ class H16k33:
 		elif value < 0x0:
 			value = 0x0
 		value = value + 0xE0;
-		bus.write_byte(addr,value)
+		self.bus.write_byte(self.addr,value)
 
 	def print(self,sValue="0000",fColon=False):
 		#(String) sValue
 		#(boolean) fColon : 0:disappear  1:appear
-		d4 = int(sValue[-1])
-		d3 =  int(sValue[-2])
-		d2 =  int(sValue[-3])
-		d1 =  int(sValue[-4])
+		d4 = H16k33.D[int(sValue[-1])]
+		d3 = H16k33.D[int(sValue[-2])]
+		d2 = H16k33.D[int(sValue[-3])]
+		d1 = H16k33.D[int(sValue[-4])]
 		if fColon == True:
 			coron = 0xf
 		else:
 			coron = 0x0
-		data = [D[d1],0,D[d2],0,coron,0,D[d3],0,D[d4]]
-		bus.write_i2c_block_data(addr,0x00,data)
+		data = [d1,0,d2,0,coron,0,d3,0,d4]
+		self.bus.write_i2c_block_data(self.addr,0x00,data)
 
 	def close(self):
 		print("you don't have to close smbus")
 
 if __name__ == "__main__":
 
+	from datetime import datetime
+	
 	DEVICE_BUS = 1
 	DEVICE_ADDR0 = 0x70
 	DEVICE_ADDR1 = 0x71
@@ -79,15 +77,15 @@ if __name__ == "__main__":
 			count += 1
 			if count == 2:
 				ms = datetime.now().strftime("%M%S")
-				mult = "0000"+str(int(m) * int(s))
+				mult = datetime.now().strftime("%d%H")
 
 				count = 0
 			if flag:
 				flag = False
-				coron = !flag
+				coron = True
 			else:
 				flag = True
-				coron = !flag
+				coron = False
 			h1.print(ms,coron)
 			h2.print(mult,coron)
 
