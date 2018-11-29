@@ -44,16 +44,22 @@ class H16k33:
 	def print(self,sValue="0000",fColon=False):
 		#(String) sValue
 		#(boolean) fColon : 0:disappear  1:appear
-		d4 = H16k33.D[int(sValue[-1])]
-		d3 = H16k33.D[int(sValue[-2])]
-		d2 = H16k33.D[int(sValue[-3])]
-		d1 = H16k33.D[int(sValue[-4])]
-		if fColon == True:
-			coron = 0xf
-		else:
-			coron = 0x0
-		data = [d1,0,d2,0,coron,0,d3,0,d4]
-		self.bus.write_i2c_block_data(self.addr,0x00,data)
+		flag = True
+		try:
+			d4 = H16k33.D[int(sValue[-1])]
+			d3 = H16k33.D[int(sValue[-2])]
+			d2 = H16k33.D[int(sValue[-3])]
+			d1 = H16k33.D[int(sValue[-4])]
+		except:
+			print("sValue contains another of [0-9] letter")
+			flag = False
+		if flag:
+			if fColon == True:
+				coron = 0xf
+			else:
+				coron = 0x0
+			data = [d1,0,d2,0,coron,0,d3,0,d4]
+			self.bus.write_i2c_block_data(self.addr,0x00,data)
 
 	def close(self):
 		print("you don't have to close smbus")
