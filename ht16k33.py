@@ -61,36 +61,53 @@ class H16k33:
 if __name__ == "__main__":
 
 	from datetime import datetime
+	import sys
 	
-	DEVICE_BUS = 1
-	DEVICE_ADDR0 = 0x70
-	DEVICE_ADDR1 = 0x71
+	arg = sys.argv
+	if len(arg) == 1:
+		print("enter number of 4dig7seg-LED device(s),expect [1-2]")
+	else:
+		if arg[1] == "1":
+			flag1 = True
+			flag2 = False
+		elif arg[1] == "2":
+			flag1 = True
+			flag2 = True
+		else:
+			print("Wrong number,expect [1-2]")
+			flag1 = False
+			flag2 = False
 
-	h1 = H16k33(DEVICE_BUS,DEVICE_ADDR0)
-	h2 = H16k33(DEVICE_BUS,DEVICE_ADDR1)
+		if flag1:
+			DEVICE_BUS = 1
+			DEVICE_ADDR0 = 0x70
+			DEVICE_ADDR1 = 0x71
 
-	coron = 0
-	count = 1 
-	flag = True
-	while True:
-		try:
-			count += 1
-			if count == 2:
-				ms = datetime.now().strftime("%M%S")
-				mult = datetime.now().strftime("%d%H")
+			h1 = H16k33(DEVICE_BUS,DEVICE_ADDR0)
+			if flag2:h2 = H16k33(DEVICE_BUS,DEVICE_ADDR1)
 
-				count = 0
-			if flag:
-				flag = False
-				coron = True
-			else:
-				flag = True
-				coron = False
-			h1.print(ms,coron)
-			h2.print(mult,coron)
+			coron = 0
+			count = 1 
+			flag = True
+			while True:
+				try:
+					count += 1
+					if count == 2:
+						ms = datetime.now().strftime("%M%S")
+						mult = datetime.now().strftime("%d%H")
 
-			time.sleep(0.5)
+						count = 0
+					if flag:
+						flag = False
+						coron = True
+					else:
+						flag = True
+						coron = False
+					h1.print(ms,coron)
+					if flag2:h2.print(mult,coron)
 
-		except KeyboardInterrupt:
-			break
+					time.sleep(0.5)
+
+				except KeyboardInterrupt:
+					break
 
