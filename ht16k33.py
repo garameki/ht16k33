@@ -66,6 +66,13 @@ class H16k33:
 
 if __name__ == "__main__":
 
+	#SAMPLE
+	#	usage:
+	#		example1 : $ python3 ht16k33.py 1
+	#			if you connect 1 4Dig7Sed-LED
+	#		example2 : $ python3 ht16k33.py 2
+	#			if you connect 2 4Dig7Sed-LEDs
+
 	from datetime import datetime
 	import sys
 	
