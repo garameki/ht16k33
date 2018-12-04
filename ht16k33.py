@@ -36,7 +36,7 @@ class Ht16k33:
 		self.bus.write_byte(self.addr,0xE0)
 
 	def version(self):
-		return "1.1"
+		return "1.2"
 
 
 		#light strength
